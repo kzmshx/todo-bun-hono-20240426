@@ -1,0 +1,5 @@
+node_modules
+
+# Dev Container
+.devcontainer/bun/root/.bash_history
+.devcontainer/bun/root/.bashrc
