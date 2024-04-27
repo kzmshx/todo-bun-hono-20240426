@@ -9,8 +9,10 @@
     "fix": "run-s *:fix"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.2.1",
     "@prisma/client": "^5.13.0",
-    "hono": "^4.2.8"
+    "hono": "^4.2.8",
+    "zod": "^3.23.4"
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.1",
