@@ -11,5 +11,22 @@ services:
     networks:
       net:
 
+  db:
+    image: mysql:8.0.36
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dev
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+      TZ: Asia/Tokyo
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d:cached
+      - ./db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:cached
+    ports:
+      - "3306:3306"
+    networks:
+      net:
+
 networks:
   net:

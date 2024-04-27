@@ -12,7 +12,14 @@
   "features": {},
   "customizations": {
     "vscode": {
-      "extensions": ["biomejs.biome", "esbenp.prettier-vscode", "ms-azuretools.vscode-docker", "oven.bun-vscode"],
+      "extensions": [
+        "biomejs.biome",
+        "dotenv.dotenv-vscode",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker",
+        "oven.bun-vscode",
+        "Prisma.prisma"
+      ],
       "settings": {
         "[javascript]": {
           "editor.defaultFormatter": "biomejs.biome"
