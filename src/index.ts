@@ -1,6 +1,6 @@
+import env from "@/env";
+import tasks from "@/modules/task";
 import { Hono } from "hono";
-import env from "./env";
-import tasks from "./modules/task";
 
 const app = new Hono({});
 
