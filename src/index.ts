@@ -2,7 +2,7 @@ import env from "@/env";
 import tasks from "@/modules/task";
 import { Hono } from "hono";
 
-const app = new Hono({});
+const app = new Hono();
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");
