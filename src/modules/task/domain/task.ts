@@ -1,14 +1,20 @@
 import { UlidSchema } from "@/lib/zod/schema";
 import { z } from "zod";
 
-export const TaskIdSchema = UlidSchema.brand<"TaskId">();
+export const TaskIdValueSchema = UlidSchema;
+
+export const TaskIdSchema = TaskIdValueSchema.brand<"TaskId">();
 
 export type TaskId = z.infer<typeof TaskIdSchema>;
 
-export const TaskContentSchema = z.string().min(1).max(500).brand<"TaskContent">();
+export const TaskContentValueSchema = z.string().min(1).max(500);
+
+export const TaskContentSchema = TaskContentValueSchema.brand<"TaskContent">();
 
 export type TaskContent = z.infer<typeof TaskContentSchema>;
 
-export const TaskDescriptionSchema = z.string().min(1).max(16384).brand<"TaskDescription">();
+export const TaskDescriptionValueSchema = z.string().min(1).max(16384);
+
+export const TaskDescriptionSchema = TaskDescriptionValueSchema.brand<"TaskDescription">();
 
 export type TaskDescription = z.infer<typeof TaskDescriptionSchema>;

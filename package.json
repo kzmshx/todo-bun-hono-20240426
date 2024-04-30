@@ -9,6 +9,8 @@
     "fix": "run-s *:fix"
   },
   "dependencies": {
+    "@hono/swagger-ui": "^0.2.2",
+    "@hono/zod-openapi": "^0.11.0",
     "@hono/zod-validator": "^0.2.1",
     "@prisma/client": "^5.13.0",
     "hono": "^4.2.8",
