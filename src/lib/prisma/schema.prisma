@@ -8,12 +8,22 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator fabbrica {
+  provider    = "prisma-fabbrica"
+  output      = "../src/generated/prisma-fabbrica"
+  noTranspile = true
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id   Int     @id @default(autoincrement())
-  name String?
+model Task {
+  id          Int      @id @default(autoincrement())
+  content     String
+  description String?
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
