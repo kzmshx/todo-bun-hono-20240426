@@ -1,0 +1,15 @@
+# pre-push:
+#   commands:
+#     packages-audit:
+#       tags: frontend security
+#       run: yarn audit
+#     gems-audit:
+#       tags: backend security
+#       run: bundle audit
+
+pre-commit:
+  parallel: true
+  commands:
+    check:
+      glob: "*.{js,json,jsx,ts,tsx}"
+      run: bun check
