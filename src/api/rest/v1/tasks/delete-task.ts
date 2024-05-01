@@ -1,14 +1,21 @@
-import { type OpenAPIHono, createRoute } from "@hono/zod-openapi";
+import { type OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
+import { TaskIdPathSchema } from "./schema";
 
 const route = createRoute({
   method: "delete",
-  path: "/:id",
+  path: "/{id}",
   description: "Deletes a task.",
+  request: {
+    params: z.object({
+      id: TaskIdPathSchema,
+    }),
+  },
   responses: {
     204: {
-      description: "An empty body.",
+      description: "Empty body.",
     },
   },
+  tags: ["Tasks"],
 });
 
 export const useDeleteTask = (app: OpenAPIHono) =>

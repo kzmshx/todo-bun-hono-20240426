@@ -1,14 +1,21 @@
-import { type OpenAPIHono, createRoute } from "@hono/zod-openapi";
+import { type OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
+import { TaskIdPathSchema } from "./schema";
 
 const route = createRoute({
   method: "post",
-  path: "/:id/reopen",
+  path: "/{id}/reopen",
   description: "Reopens a task.",
+  request: {
+    params: z.object({
+      id: TaskIdPathSchema,
+    }),
+  },
   responses: {
     204: {
-      description: "An empty body.",
+      description: "Empty body.",
     },
   },
+  tags: ["Tasks"],
 });
 
 export const useReopenTask = (app: OpenAPIHono) =>

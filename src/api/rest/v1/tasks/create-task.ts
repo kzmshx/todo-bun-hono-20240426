@@ -2,12 +2,12 @@ import { type OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { z } from "zod";
 import { TaskContentSchema, TaskDescriptionSchema, TaskSchema } from "./schema";
 
-const CreateTaskInputSchema = z
+const NewTaskSchema = z
   .object({
     content: TaskContentSchema,
     description: TaskDescriptionSchema.optional(),
   })
-  .openapi("CreateTaskInput");
+  .openapi("NewTask");
 
 const route = createRoute({
   method: "post",
@@ -17,7 +17,7 @@ const route = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: CreateTaskInputSchema,
+          schema: NewTaskSchema,
         },
       },
     },
@@ -29,9 +29,10 @@ const route = createRoute({
           schema: TaskSchema,
         },
       },
-      description: "The created task.",
+      description: "Single task.",
     },
   },
+  tags: ["Tasks"],
 });
 
 export const useCreateTask = (app: OpenAPIHono) =>

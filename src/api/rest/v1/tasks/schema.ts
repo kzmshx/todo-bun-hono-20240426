@@ -1,3 +1,4 @@
+import { CommaSeparatedStringSchema } from "@/lib/zod/schema";
 import {
   TaskContentValueSchema,
   TaskDescriptionValueSchema,
@@ -6,34 +7,44 @@ import {
 import { z } from "zod";
 
 export const TaskIdSchema = TaskIdValueSchema.openapi({
-  example: "01HWQM125WA32K8721A1V5D8TV",
   description: "Task ID.",
+  example: "01HWQM125WA32K8721A1V5D8TV",
 });
 
-export const CommaSeparatedTaskIdsSchema = z
-  .string()
-  .transform((v) => v.split(","))
-  .pipe(z.array(TaskIdSchema))
-  .optional();
+export const TaskIdPathSchema = TaskIdSchema.openapi({
+  param: {
+    name: "id",
+    in: "path",
+  },
+});
+
+export const TaskIdsQuerySchema = CommaSeparatedStringSchema.pipe(z.array(TaskIdSchema)).openapi({
+  param: {
+    name: "ids",
+    in: "query",
+    style: "form",
+    explode: false,
+  },
+});
 
 export const TaskContentSchema = TaskContentValueSchema.openapi({
-  example: "Buy milk",
   description: "Task content.",
+  example: "Buy milk",
 });
 
 export const TaskDescriptionSchema = TaskDescriptionValueSchema.openapi({
-  example: "Buy 2% milk",
   description: "A description for the task.",
+  example: "Buy 2% milk",
 });
 
 export const TaskIsCompletedSchema = z.boolean().openapi({
-  example: false,
   description: "Flag to mark completed tasks.",
+  example: false,
 });
 
 export const TaskCreatedAtSchema = z.string().openapi({
-  example: "2019-12-11T22:36:50.000000Z",
   description: "The date when the task was created (read-only).",
+  example: "2019-12-11T22:36:50.000000Z",
 });
 
 export const TaskSchema = z
