@@ -13,12 +13,14 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "bierner.markdown-mermaid",
         "biomejs.biome",
         "dotenv.dotenv-vscode",
         "esbenp.prettier-vscode",
         "ms-azuretools.vscode-docker",
         "oven.bun-vscode",
-        "Prisma.prisma"
+        "Prisma.prisma",
+        "tamasfe.even-better-toml"
       ],
       "settings": {
         "[javascript]": {
@@ -45,7 +47,7 @@
           "source.organizeImports.biome": "explicit"
         },
         "biome.enabled": true,
-        "biome.rename": true,
+        "biome.rename": false,
         "bun.runtime": "/bun/bin/bun",
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true,
