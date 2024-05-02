@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "_biome:check": "biome check .",
     "_biome:fix": "bun run _biome:check --apply",
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.7.1",
     "@faker-js/faker": "^8.4.1",
+    "@quramy/jest-prisma-core": "^1.8.0",
     "@quramy/prisma-fabbrica": "^2.1.2",
     "@types/bun": "latest",
     "lefthook": "^1.6.10",
