@@ -6,6 +6,6 @@ import { Container } from "./container";
 export const di = (env: Env) => {
   return createMiddleware<HonoEnv>(async (c, next) => {
     c.set("container", new Container(env));
-    next();
+    await next();
   });
 };
