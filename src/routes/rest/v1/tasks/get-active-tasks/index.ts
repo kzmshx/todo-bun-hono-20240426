@@ -1,7 +1,9 @@
+import type { HonoEnv } from "@/libs/hono/types";
+import { getActiveTasks } from "@/modules/task/contract/query";
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
-import { TaskIdsQuerySchema, TasksSchema } from "./schema";
+import { TaskIdsQuerySchema, TasksSchema, createTaskModel } from "../schema";
 
-export default new OpenAPIHono().openapi(
+export default new OpenAPIHono<HonoEnv>().openapi(
   createRoute({
     method: "get",
     path: "/",
@@ -23,17 +25,13 @@ export default new OpenAPIHono().openapi(
     },
     tags: ["Tasks"],
   }),
-  (c) => {
+  async (c) => {
+    const { prisma } = c.var.container;
+
+    const tasks = await getActiveTasks(prisma)();
+
     return c.json(
-      [
-        {
-          id: "01HWQM125WA32K8721A1V5D8TV",
-          content: "Buy milk",
-          description: "Buy 2% milk",
-          is_completed: false,
-          created_at: "2019-12-11T22:36:50.000000Z",
-        },
-      ],
+      tasks.map((t) => createTaskModel(t)),
       200,
     );
   },

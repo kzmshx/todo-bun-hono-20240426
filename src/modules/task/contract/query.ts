@@ -11,3 +11,14 @@ export const getActiveTask =
       },
     });
   };
+
+export const getActiveTasks = (prisma: PrismaClient) => async (): Promise<Task[]> => {
+  return prisma.task.findMany({
+    where: {
+      isCompleted: false,
+    },
+    orderBy: {
+      id: "asc",
+    },
+  });
+};
