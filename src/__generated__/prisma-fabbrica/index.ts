@@ -20,10 +20,12 @@ const modelFieldDefinitions: ModelWithFields[] = [{
     }];
 
 type TaskScalarOrEnumFields = {
+    id: string;
     content: string;
 };
 
 type TaskFactoryDefineInput = {
+    id?: string;
     content?: string;
     description?: string | null;
     isCompleted?: boolean;
@@ -61,6 +63,7 @@ function autoGenerateTaskScalarsOrEnums({ seq }: {
     readonly seq: number;
 }): TaskScalarOrEnumFields {
     return {
+        id: getScalarFieldValueGenerator().String({ modelName: "Task", fieldName: "id", isId: true, isUnique: false, seq }),
         content: getScalarFieldValueGenerator().String({ modelName: "Task", fieldName: "content", isId: false, isUnique: false, seq })
     };
 }

@@ -31,7 +31,7 @@
     "sort-package-json": "2.10.0"
   },
   "prisma": {
-    "schema": "src/lib/prisma/schema.prisma",
+    "schema": "prisma/schema.prisma",
     "seed": "bun run src/lib/prisma/seed.ts"
   }
 }

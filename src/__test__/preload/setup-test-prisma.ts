@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, beforeEach } from "bun:test";
-import { initialize } from "@/generated/prisma-fabbrica";
+import { initialize } from "@/__generated__/prisma-fabbrica";
 import type { PrismaClient } from "@prisma/client";
 import { PrismaEnvironmentDelegate } from "@quramy/jest-prisma-core";
 

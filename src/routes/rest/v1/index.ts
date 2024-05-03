@@ -1,12 +1,10 @@
+import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import health from "./health";
 import tasks from "./tasks";
 
 const app = new OpenAPIHono();
 
-app.route("/health", health);
 app.route("/tasks", tasks);
-
 app.doc("/doc", {
   openapi: "3.0.0",
   info: {
@@ -15,5 +13,6 @@ app.doc("/doc", {
     description: "A simple API to manage tasks",
   },
 });
+app.get("/ui", swaggerUI({ url: "/rest/v1/doc" }));
 
 export default app;

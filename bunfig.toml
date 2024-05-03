@@ -1,2 +1,5 @@
 [test]
-preload = ['test/preload/setup-test-db.ts', 'test/preload/setup-test-prisma.ts']
+preload = [
+	'src/__test__/preload/setup-test-db.ts',
+	'src/__test__/preload/setup-test-prisma.ts',
+]
