@@ -41,7 +41,7 @@ afterAll(async () => {
 /**
  * Mock prisma client
  */
-mock.module("@/lib/prisma/client", () => {
+mock.module("@/libs/prisma/client", () => {
   return {
     prisma,
   };

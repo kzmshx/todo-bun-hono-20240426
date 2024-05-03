@@ -1,4 +1,4 @@
-import type { HonoEnv } from "@/lib/hono/types";
+import type { HonoEnv } from "@/libs/hono/types";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import closeTask from "./close-task";
 import createTask from "./create-task";

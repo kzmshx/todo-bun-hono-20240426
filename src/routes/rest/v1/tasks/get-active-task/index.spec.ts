@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { app } from "@/index";
-import { TaskFactory } from "@/lib/prisma/factories";
+import { TaskFactory } from "@/libs/prisma/factories";
 import { ulid } from "ulid";
 
 describe("GET /rest/v1/tasks/:id", () => {

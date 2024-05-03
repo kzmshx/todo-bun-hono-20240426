@@ -1,6 +1,6 @@
-import { parseEnv } from "@/lib/env";
-import { dependencyInjection } from "@/lib/hono/middlewares";
-import type { HonoEnv } from "@/lib/hono/types";
+import { parseEnv } from "@/libs/env";
+import { dependencyInjection } from "@/libs/hono/middlewares";
+import type { HonoEnv } from "@/libs/hono/types";
 import routes from "@/routes";
 import { Hono } from "hono";
 

@@ -32,6 +32,6 @@
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
-    "seed": "bun run src/lib/prisma/seed.ts"
+    "seed": "bun run src/libs/prisma/seed.ts"
   }
 }

@@ -1,4 +1,4 @@
-import { CommaSeparatedStringSchema } from "@/lib/zod/schema";
+import { CommaSeparatedStringSchema } from "@/libs/zod/schema";
 import type { Task } from "@/modules/task/contract/models";
 import {
   TaskContentValueSchema,

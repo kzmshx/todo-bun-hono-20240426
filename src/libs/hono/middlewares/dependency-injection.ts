@@ -1,4 +1,4 @@
-import type { Env } from "@/lib/env";
+import type { Env } from "@/libs/env";
 import { createMiddleware } from "hono/factory";
 import { Container } from "../dependency-injection";
 import type { HonoEnv } from "../types";

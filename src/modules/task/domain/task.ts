@@ -1,4 +1,4 @@
-import { UlidSchema } from "@/lib/zod/schema";
+import { UlidSchema } from "@/libs/zod/schema";
 import { z } from "zod";
 
 export const TaskIdValueSchema = UlidSchema;
