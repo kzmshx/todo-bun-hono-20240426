@@ -1,4 +1,4 @@
-import type { Container } from "./di";
+import type { Container } from "./dependency-injection";
 
 export type HonoEnv = {
   Variables: {

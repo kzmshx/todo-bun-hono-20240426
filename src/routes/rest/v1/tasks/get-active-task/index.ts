@@ -1,4 +1,4 @@
-import { NotFoundException } from "@/lib/hono/exceptions/not-found-exception";
+import { NotFoundException } from "@/lib/hono/exceptions";
 import type { HonoEnv } from "@/lib/hono/types";
 import { getActiveTask } from "@/modules/task/contract/query";
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
