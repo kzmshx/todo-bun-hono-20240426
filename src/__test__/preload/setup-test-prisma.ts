@@ -1,11 +1,12 @@
-import { afterAll, afterEach, beforeAll, beforeEach } from "bun:test";
+import { afterAll, afterEach, beforeAll, beforeEach, mock } from "bun:test";
 import { initialize } from "@/__generated__/prisma-fabbrica";
 import type { PrismaClient } from "@prisma/client";
 import { PrismaEnvironmentDelegate } from "@quramy/jest-prisma-core";
 
-declare global {
-  var prisma: PrismaClient;
-}
+/**
+ * Setup prisma client with auto rollback
+ */
+let prisma: PrismaClient;
 
 const delegate = new PrismaEnvironmentDelegate(
   {
@@ -19,9 +20,8 @@ const delegate = new PrismaEnvironmentDelegate(
 
 beforeAll(async () => {
   const testPrisma = await delegate.preSetup<PrismaClient>();
-
-  global.prisma = testPrisma.client;
-  initialize({ prisma: global.prisma });
+  prisma = testPrisma.client;
+  initialize({ prisma });
 });
 
 beforeEach(async () => {
@@ -36,4 +36,13 @@ afterEach(async () => {
 
 afterAll(async () => {
   await delegate.teardown();
+});
+
+/**
+ * Mock prisma client
+ */
+mock.module("@/lib/prisma/client", () => {
+  return {
+    prisma,
+  };
 });

@@ -1,5 +1,6 @@
 import type { Env } from "@/lib/env";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma/client";
+import type { PrismaClient } from "@prisma/client";
 
 type ServiceMap = {
   env: Env;
@@ -11,10 +12,7 @@ export class Container implements ServiceMap {
 
   private _prisma?: PrismaClient;
   get prisma() {
-    const factory = () => {
-      return new PrismaClient();
-    };
-    return (this._prisma ??= factory());
+    return (this._prisma ??= prisma);
   }
   set prisma(value: PrismaClient) {
     this._prisma = value;
