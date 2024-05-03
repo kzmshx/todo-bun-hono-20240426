@@ -1,2 +1,2 @@
 [test]
-preload = ['test/preload.ts']
+preload = ['test/preload/setup-test-db.ts', 'test/preload/setup-test-prisma.ts']
