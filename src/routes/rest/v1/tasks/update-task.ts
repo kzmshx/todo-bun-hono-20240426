@@ -1,4 +1,4 @@
-import { type OpenAPIHono, createRoute } from "@hono/zod-openapi";
+import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { z } from "zod";
 import { TaskContentSchema, TaskDescriptionSchema, TaskIdPathSchema, TaskSchema } from "./schema";
 
@@ -9,37 +9,36 @@ const UpdateTaskSchema = z
   })
   .openapi("UpdateTask");
 
-const route = createRoute({
-  method: "post",
-  path: "/{id}",
-  description: "Update a task.",
-  request: {
-    params: z.object({
-      id: TaskIdPathSchema,
-    }),
-    body: {
-      content: {
-        "application/json": {
-          schema: UpdateTaskSchema,
+export default new OpenAPIHono().openapi(
+  createRoute({
+    method: "post",
+    path: "/{id}",
+    description: "Update a task.",
+    request: {
+      params: z.object({
+        id: TaskIdPathSchema,
+      }),
+      body: {
+        content: {
+          "application/json": {
+            schema: UpdateTaskSchema,
+          },
         },
       },
     },
-  },
-  responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: TaskSchema,
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            schema: TaskSchema,
+          },
         },
+        description: "Single task.",
       },
-      description: "Single task.",
     },
-  },
-  tags: ["Tasks"],
-});
-
-export const useUpdateTask = (app: OpenAPIHono) =>
-  app.openapi(route, (c) => {
+    tags: ["Tasks"],
+  }),
+  (c) => {
     return c.json(
       {
         id: "01HWQM125WA32K8721A1V5D8TV",
@@ -50,4 +49,5 @@ export const useUpdateTask = (app: OpenAPIHono) =>
       },
       200,
     );
-  });
+  },
+);

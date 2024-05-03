@@ -1,30 +1,29 @@
-import { type OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
+import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { TaskIdPathSchema, TaskSchema } from "./schema";
 
-const route = createRoute({
-  method: "get",
-  path: "/{id}",
-  description: "Returns a single active (non-completed) task by ID as a JSON object.",
-  request: {
-    params: z.object({
-      id: TaskIdPathSchema,
-    }),
-  },
-  responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: TaskSchema,
-        },
-      },
-      description: "Single task.",
+export default new OpenAPIHono().openapi(
+  createRoute({
+    method: "get",
+    path: "/{id}",
+    description: "Returns a single active (non-completed) task by ID as a JSON object.",
+    request: {
+      params: z.object({
+        id: TaskIdPathSchema,
+      }),
     },
-  },
-  tags: ["Tasks"],
-});
-
-export const useGetActiveTask = (app: OpenAPIHono) =>
-  app.openapi(route, (c) => {
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            schema: TaskSchema,
+          },
+        },
+        description: "Single task.",
+      },
+    },
+    tags: ["Tasks"],
+  }),
+  (c) => {
     return c.json(
       {
         id: "01HWQM125WA32K8721A1V5D8TV",
@@ -35,4 +34,5 @@ export const useGetActiveTask = (app: OpenAPIHono) =>
       },
       200,
     );
-  });
+  },
+);

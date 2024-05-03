@@ -1,30 +1,29 @@
-import { type OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
+import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { TaskIdsQuerySchema, TasksSchema } from "./schema";
 
-const route = createRoute({
-  method: "get",
-  path: "/",
-  description: "Returns a JSON-encoded array containing all active tasks.",
-  request: {
-    query: z.object({
-      ids: TaskIdsQuerySchema.optional(),
-    }),
-  },
-  responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: TasksSchema,
-        },
-      },
-      description: "Single task.",
+export default new OpenAPIHono().openapi(
+  createRoute({
+    method: "get",
+    path: "/",
+    description: "Returns a JSON-encoded array containing all active tasks.",
+    request: {
+      query: z.object({
+        ids: TaskIdsQuerySchema.optional(),
+      }),
     },
-  },
-  tags: ["Tasks"],
-});
-
-export const useGetActiveTasks = (app: OpenAPIHono) =>
-  app.openapi(route, (c) => {
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            schema: TasksSchema,
+          },
+        },
+        description: "Single task.",
+      },
+    },
+    tags: ["Tasks"],
+  }),
+  (c) => {
     return c.json(
       [
         {
@@ -37,4 +36,5 @@ export const useGetActiveTasks = (app: OpenAPIHono) =>
       ],
       200,
     );
-  });
+  },
+);

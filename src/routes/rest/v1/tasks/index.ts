@@ -1,20 +1,22 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { useCloseTask } from "./close-task";
-import { useCreateTask } from "./create-task";
-import { useDeleteTask } from "./delete-task";
-import { useGetActiveTask } from "./get-active-task";
-import { useGetActiveTasks } from "./get-active-tasks";
-import { useReopenTask } from "./reopen-task";
-import { useUpdateTask } from "./update-task";
+import closeTask from "./close-task";
+import createTask from "./create-task";
+import deleteTask from "./delete-task";
+import getActiveTask from "./get-active-task";
+import getActiveTasks from "./get-active-tasks";
+import reopenTask from "./reopen-task";
+import updateTask from "./update-task";
 
 const app = new OpenAPIHono();
 
-useGetActiveTasks(app);
-useCreateTask(app);
-useGetActiveTask(app);
-useUpdateTask(app);
-useDeleteTask(app);
-useCloseTask(app);
-useReopenTask(app);
+app.route("/", getActiveTasks);
+app.route("/", createTask);
+
+app.route("/", getActiveTask);
+app.route("/", updateTask);
+app.route("/", deleteTask);
+
+app.route("/", closeTask);
+app.route("/", reopenTask);
 
 export default app;
