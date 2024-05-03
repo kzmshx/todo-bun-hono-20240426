@@ -1,3 +1,4 @@
+import type { HonoEnv } from "@/lib/hono/types";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import closeTask from "./close-task";
 import createTask from "./create-task";
@@ -7,7 +8,7 @@ import getActiveTasks from "./get-active-tasks";
 import reopenTask from "./reopen-task";
 import updateTask from "./update-task";
 
-const app = new OpenAPIHono();
+const app = new OpenAPIHono<HonoEnv>();
 
 app.route("/", getActiveTasks);
 app.route("/", createTask);

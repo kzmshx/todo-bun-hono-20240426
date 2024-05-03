@@ -13,6 +13,8 @@ app.use(di(env));
 // Routes
 app.route("/", routes);
 
+export { app };
+
 export default {
   port: env.API_PORT,
   ...app,

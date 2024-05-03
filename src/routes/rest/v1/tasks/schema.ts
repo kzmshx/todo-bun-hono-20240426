@@ -1,4 +1,5 @@
 import { CommaSeparatedStringSchema } from "@/lib/zod/schema";
+import type { Task } from "@/modules/task/contract/models";
 import {
   TaskContentValueSchema,
   TaskDescriptionValueSchema,
@@ -51,10 +52,24 @@ export const TaskSchema = z
   .object({
     id: TaskIdSchema,
     content: TaskContentSchema,
-    description: TaskDescriptionSchema.optional(),
+    description: TaskDescriptionSchema.nullable(),
     is_completed: TaskIsCompletedSchema,
     created_at: TaskCreatedAtSchema,
   })
   .openapi("Task");
 
+export type TaskModel = z.infer<typeof TaskSchema>;
+
+export const createTaskModel = (task: Task): TaskModel => {
+  return {
+    id: task.id,
+    content: task.content,
+    description: task.description,
+    is_completed: task.isCompleted,
+    created_at: task.createdAt.toISOString(),
+  };
+};
+
 export const TasksSchema = z.array(TaskSchema);
+
+export type TaskModels = z.infer<typeof TasksSchema>;
