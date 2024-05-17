@@ -9,9 +9,7 @@ const route = createRoute({
   path: "/{id}",
   description: "Returns a single active (non-completed) task by ID as a JSON object.",
   request: {
-    params: z.object({
-      id: TaskIdPathSchema,
-    }),
+    params: z.object({ id: TaskIdPathSchema }),
   },
   responses: {
     200: {
