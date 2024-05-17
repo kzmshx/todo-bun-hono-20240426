@@ -1,7 +1,8 @@
-import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
+import { createOpenAPIApp } from "@/libs/hono/factory";
+import { createRoute, z } from "@hono/zod-openapi";
 import { TaskIdPathSchema } from "./schema";
 
-export default new OpenAPIHono().openapi(
+export default createOpenAPIApp().openapi(
   createRoute({
     method: "post",
     path: "/{id}/close",

@@ -1,7 +1,7 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
+import { createOpenAPIApp } from "@/libs/hono/factory";
 import v1 from "./v1";
 
-const app = new OpenAPIHono();
+const app = createOpenAPIApp();
 
 app.route("/v1", v1);
 

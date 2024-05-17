@@ -1,6 +1,12 @@
-import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
+import { createOpenAPIApp } from "@/libs/hono/factory";
+import { createRoute } from "@hono/zod-openapi";
 import { z } from "zod";
-import { TaskContentSchema, TaskDescriptionSchema, TaskIdPathSchema, TaskSchema } from "./schema";
+import {
+  RestTaskSchema,
+  TaskContentSchema,
+  TaskDescriptionSchema,
+  TaskIdPathSchema,
+} from "./schema";
 
 const UpdateTaskSchema = z
   .object({
@@ -9,7 +15,7 @@ const UpdateTaskSchema = z
   })
   .openapi("UpdateTask");
 
-export default new OpenAPIHono().openapi(
+export default createOpenAPIApp().openapi(
   createRoute({
     method: "post",
     path: "/{id}",
@@ -30,7 +36,7 @@ export default new OpenAPIHono().openapi(
       200: {
         content: {
           "application/json": {
-            schema: TaskSchema,
+            schema: RestTaskSchema,
           },
         },
         description: "Single task.",

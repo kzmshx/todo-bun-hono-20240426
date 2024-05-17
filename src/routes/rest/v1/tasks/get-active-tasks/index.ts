@@ -1,9 +1,10 @@
-import type { HonoEnv } from "@/libs/hono/types";
-import { getActiveTasks } from "@/modules/task/contract/query";
-import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
-import { TaskIdsQuerySchema, TasksSchema, createTaskModel } from "../schema";
+import { InternalServerErrorException } from "@/libs/hono/exceptions";
+import { createOpenAPIApp } from "@/libs/hono/factory";
+import { type TaskModel, getActiveTasks } from "@/modules/task";
+import { createRoute, z } from "@hono/zod-openapi";
+import { RestTaskListSchema, TaskIdsQuerySchema, toRestTask } from "../schema";
 
-export default new OpenAPIHono<HonoEnv>().openapi(
+export default createOpenAPIApp().openapi(
   createRoute({
     method: "get",
     path: "/",
@@ -17,10 +18,20 @@ export default new OpenAPIHono<HonoEnv>().openapi(
       200: {
         content: {
           "application/json": {
-            schema: TasksSchema,
+            schema: RestTaskListSchema,
           },
         },
         description: "Single task.",
+      },
+      500: {
+        content: {
+          "application/json": {
+            schema: z.object({
+              error: z.string(),
+            }),
+          },
+        },
+        description: "Internal Server Error.",
       },
     },
     tags: ["Tasks"],
@@ -28,11 +39,11 @@ export default new OpenAPIHono<HonoEnv>().openapi(
   async (c) => {
     const { prisma } = c.var.container;
 
-    const tasks = await getActiveTasks(prisma)();
-
-    return c.json(
-      tasks.map((t) => createTaskModel(t)),
-      200,
+    return getActiveTasks({ prisma })().match(
+      (tasks: TaskModel[]) => c.json(tasks.map(toRestTask)),
+      (err) => {
+        throw new InternalServerErrorException({ cause: err });
+      },
     );
   },
 );

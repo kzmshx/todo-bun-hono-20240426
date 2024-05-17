@@ -1,10 +1,10 @@
-import { NotFoundException } from "@/libs/hono/exceptions";
-import type { HonoEnv } from "@/libs/hono/types";
-import { getActiveTask } from "@/modules/task/contract/query";
-import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
-import { TaskIdPathSchema, TaskSchema, createTaskModel } from "../schema";
+import { InternalServerErrorException, NotFoundException } from "@/libs/hono/exceptions";
+import { createOpenAPIApp } from "@/libs/hono/factory";
+import { getActiveTask } from "@/modules/task";
+import { createRoute, z } from "@hono/zod-openapi";
+import { RestTaskSchema, TaskIdPathSchema, toRestTask } from "../schema";
 
-export default new OpenAPIHono<HonoEnv>().openapi(
+export default createOpenAPIApp().openapi(
   createRoute({
     method: "get",
     path: "/{id}",
@@ -18,7 +18,7 @@ export default new OpenAPIHono<HonoEnv>().openapi(
       200: {
         content: {
           "application/json": {
-            schema: TaskSchema,
+            schema: RestTaskSchema,
           },
         },
         description: "Single task.",
@@ -30,11 +30,16 @@ export default new OpenAPIHono<HonoEnv>().openapi(
     const { prisma } = c.var.container;
     const { id } = c.req.param();
 
-    const task = await getActiveTask(prisma)(id);
-    if (!task) {
-      throw new NotFoundException("Task not found");
-    }
-
-    return c.json(createTaskModel(task), 200);
+    return getActiveTask({ prisma })(id).match(
+      (task) => {
+        if (!task) {
+          throw new NotFoundException({ message: "Task not found" });
+        }
+        return c.json(toRestTask(task));
+      },
+      (err) => {
+        throw new InternalServerErrorException({ cause: err });
+      },
+    );
   },
 );

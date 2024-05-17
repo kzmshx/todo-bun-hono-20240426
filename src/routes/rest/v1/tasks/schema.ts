@@ -1,10 +1,10 @@
-import { CommaSeparatedStringSchema } from "@/libs/zod/schema";
-import type { Task } from "@/modules/task/contract/models";
+import { CommaSeparatedStringSchema } from "@/libs/zod/schemas";
 import {
   TaskContentValueSchema,
   TaskDescriptionValueSchema,
   TaskIdValueSchema,
-} from "@/modules/task/domain/task";
+  type TaskModel,
+} from "@/modules/task";
 import { z } from "zod";
 
 export const TaskIdSchema = TaskIdValueSchema.openapi({
@@ -48,7 +48,7 @@ export const TaskCreatedAtSchema = z.string().openapi({
   example: "2019-12-11T22:36:50.000000Z",
 });
 
-export const TaskSchema = z
+export const RestTaskSchema = z
   .object({
     id: TaskIdSchema,
     content: TaskContentSchema,
@@ -58,18 +58,18 @@ export const TaskSchema = z
   })
   .openapi("Task");
 
-export type TaskModel = z.infer<typeof TaskSchema>;
+export type RestTask = z.infer<typeof RestTaskSchema>;
 
-export const createTaskModel = (task: Task): TaskModel => {
+export const toRestTask = (model: TaskModel): RestTask => {
   return {
-    id: task.id,
-    content: task.content,
-    description: task.description,
-    is_completed: task.isCompleted,
-    created_at: task.createdAt.toISOString(),
+    id: model.id,
+    content: model.content,
+    description: model.description,
+    is_completed: model.isCompleted,
+    created_at: model.createdAt.toISOString(),
   };
 };
 
-export const TasksSchema = z.array(TaskSchema);
+export const RestTaskListSchema = z.array(RestTaskSchema);
 
-export type TaskModels = z.infer<typeof TasksSchema>;
+export type RestTaskList = z.infer<typeof RestTaskListSchema>;
