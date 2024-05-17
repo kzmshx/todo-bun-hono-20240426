@@ -30,7 +30,6 @@ type TaskFactoryDefineInput = {
     description?: string | null;
     isCompleted?: boolean;
     createdAt?: Date;
-    updatedAt?: Date;
 };
 
 type TaskFactoryDefineOptions = {
