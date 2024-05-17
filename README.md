@@ -1,11 +1,25 @@
+# ToDo API built with Bun and Hono
+
 To install dependencies:
+
 ```sh
 bun install
 ```
 
-To run:
+To start dev server:
+
 ```sh
-bun run dev
+bun dev
 ```
 
-open http://localhost:3000
+To run checks (format, lint and type-check):
+
+```sh
+bun check
+```
+
+To run fixers (format and type-check):
+
+```sh
+bun fix
+```
