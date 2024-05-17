@@ -5,6 +5,7 @@
     "_biome:fix": "bun run _biome:check --apply",
     "_sort:check": "bun run _sort:fix --check",
     "_sort:fix": "sort-package-json",
+    "_tsc:check": "tsc --noEmit",
     "check": "run-p *:check",
     "dev": "bun run --hot src/index.ts",
     "fix": "run-s *:fix"
