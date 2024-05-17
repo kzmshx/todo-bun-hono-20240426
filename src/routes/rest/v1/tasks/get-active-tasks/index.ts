@@ -16,22 +16,12 @@ export default createOpenAPIApp().openapi(
     },
     responses: {
       200: {
-        content: {
-          "application/json": {
-            schema: RestTaskListSchema,
-          },
-        },
+        content: { "application/json": { schema: RestTaskListSchema } },
         description: "Single task.",
       },
       500: {
-        content: {
-          "application/json": {
-            schema: z.object({
-              error: z.string(),
-            }),
-          },
-        },
-        description: "Internal Server Error.",
+        content: { "application/json": { schema: z.object({ message: z.string() }) } },
+        description: "Internal server error.",
       },
     },
     tags: ["Tasks"],
@@ -40,7 +30,7 @@ export default createOpenAPIApp().openapi(
     const { prisma } = c.var.container;
 
     return getActiveTasks({ prisma })().match(
-      (tasks: TaskModel[]) => c.json(tasks.map(toRestTask)),
+      (tasks: TaskModel[]) => c.json(tasks.map(toRestTask), 200),
       (err) => {
         throw new InternalServerErrorException({ cause: err });
       },

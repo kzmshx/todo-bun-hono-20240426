@@ -18,14 +18,20 @@ export default createOpenAPIApp().openapi(
     path: "/",
     description: "Creates a new task and returns it as a JSON object.",
     request: {
-      body: {
-        content: { "application/json": { schema: NewTaskSchema } },
-      },
+      body: { content: { "application/json": { schema: NewTaskSchema } } },
     },
     responses: {
       200: {
         content: { "application/json": { schema: RestTaskSchema } },
         description: "Single task.",
+      },
+      400: {
+        content: { "application/json": { schema: z.object({ message: z.string() }) } },
+        description: "Bad request.",
+      },
+      500: {
+        content: { "application/json": { schema: z.object({ message: z.string() }) } },
+        description: "Internal server error.",
       },
     },
     tags: ["Tasks"],

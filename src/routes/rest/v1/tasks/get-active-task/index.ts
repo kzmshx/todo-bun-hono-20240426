@@ -16,18 +16,23 @@ export default createOpenAPIApp().openapi(
     },
     responses: {
       200: {
-        content: {
-          "application/json": {
-            schema: RestTaskSchema,
-          },
-        },
+        content: { "application/json": { schema: RestTaskSchema } },
         description: "Single task.",
+      },
+      404: {
+        content: { "application/json": { schema: z.object({ message: z.string() }) } },
+        description: "Task not found.",
+      },
+      500: {
+        content: { "application/json": { schema: z.object({ message: z.string() }) } },
+        description: "Internal server error.",
       },
     },
     tags: ["Tasks"],
   }),
   async (c) => {
-    const { prisma } = c.var.container;
+    const { container } = c.var;
+    const { prisma } = container;
     const { id } = c.req.param();
 
     return getActiveTask({ prisma })(id).match(
@@ -35,7 +40,7 @@ export default createOpenAPIApp().openapi(
         if (!task) {
           throw new NotFoundException({ message: "Task not found" });
         }
-        return c.json(toRestTask(task));
+        return c.json(toRestTask(task), 200);
       },
       (err) => {
         throw new InternalServerErrorException({ cause: err });
