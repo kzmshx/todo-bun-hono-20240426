@@ -8,9 +8,7 @@ export default createOpenAPIApp().openapi(
     path: "/{id}/close",
     description: "Closes a task.",
     request: {
-      params: z.object({
-        id: TaskIdPathSchema,
-      }),
+      params: z.object({ id: TaskIdPathSchema }),
     },
     responses: {
       204: {
