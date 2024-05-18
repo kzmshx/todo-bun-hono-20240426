@@ -1,6 +1,10 @@
 import { EntityNotFoundError } from "@/libs/error/entity-not-found-error";
 import { ValidationError } from "@/libs/error/validation-error";
-import { BadRequestException, InternalServerErrorException } from "@/libs/hono/exceptions";
+import {
+  BadRequestException,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@/libs/hono/exceptions";
 import { createOpenAPIApp } from "@/libs/hono/factory";
 import { ErrorResponseSchema } from "@/routes/rest/schema";
 import { createRoute } from "@hono/zod-openapi";
@@ -41,6 +45,10 @@ const route = createRoute({
       content: { "application/json": { schema: ErrorResponseSchema } },
       description: "Bad request.",
     },
+    404: {
+      content: { "application/json": { schema: ErrorResponseSchema } },
+      description: "Task not found.",
+    },
     500: {
       content: { "application/json": { schema: ErrorResponseSchema } },
       description: "Internal server error.",
@@ -59,8 +67,11 @@ export default createOpenAPIApp().openapi(route, async (c) => {
   }).match(
     (task) => c.json(toRestTask(task), 200),
     (err) => {
-      if (err instanceof ValidationError || err instanceof EntityNotFoundError) {
+      if (err instanceof ValidationError) {
         throw new BadRequestException({ message: err.message });
+      }
+      if (err instanceof EntityNotFoundError) {
+        throw new NotFoundException({ message: err.message });
       }
       throw new InternalServerErrorException({ cause: err });
     },

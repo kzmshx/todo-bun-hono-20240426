@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import app from "@/index";
 import { TaskFactory } from "@/libs/prisma/factories";
+import { ulid } from "ulid";
 
 describe("POST /rest/v1/tasks/{id}", () => {
   test("200 OK", async () => {
@@ -41,6 +42,21 @@ describe("POST /rest/v1/tasks/{id}", () => {
     expect(response.status).toBe(400);
     expect(await response.json()).toMatchObject({
       message: "Validation Failed",
+    });
+  });
+
+  test("404 Not Found", async () => {
+    // Act
+    const body = { content: "Updated task content" };
+    const response = await app.request(`/rest/v1/tasks/${ulid()}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    // Assert
+    expect(response.status).toBe(404);
+    expect(await response.json()).toMatchObject({
+      message: "Task not found",
     });
   });
 });
