@@ -1,6 +1,6 @@
 import { InternalServerErrorException } from "@/libs/hono/exceptions";
 import { createOpenAPIApp } from "@/libs/hono/factory";
-import { type TaskModel, getActiveTasks } from "@/modules/task";
+import type { TaskModel } from "@/modules/task";
 import { createRoute, z } from "@hono/zod-openapi";
 import { RestTaskListSchema, TaskIdsQuerySchema, toRestTask } from "../schema";
 
@@ -27,9 +27,10 @@ const route = createRoute({
 });
 
 export default createOpenAPIApp().openapi(route, async (c) => {
-  const { prisma } = c.var.container;
+  const { container } = c.var;
+  const { getActiveTasks } = container;
 
-  return getActiveTasks({ prisma })().match(
+  return getActiveTasks().match(
     (tasks: TaskModel[]) => c.json(tasks.map(toRestTask), 200),
     (err) => {
       throw new InternalServerErrorException({ cause: err });

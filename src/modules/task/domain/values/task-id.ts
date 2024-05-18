@@ -10,12 +10,12 @@ export const TaskIdSchema = TaskIdValueSchema.brand<"TaskId">();
 
 export type TaskId = z.infer<typeof TaskIdSchema>;
 
-export const TaskId = (value: string): Result<TaskId, Error> => {
+export const newTaskId = (value: string): Result<TaskId, Error> => {
   return validate(TaskIdSchema, value);
 };
 
 export const generateTaskId = (): TaskId => {
-  return TaskId(ulid()).match(
+  return newTaskId(ulid()).match(
     (v) => v,
     (e) => {
       throw e;

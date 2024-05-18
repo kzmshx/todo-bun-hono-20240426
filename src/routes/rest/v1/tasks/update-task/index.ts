@@ -1,24 +1,34 @@
+import { EntityNotFoundError } from "@/libs/error/entity-not-found-error";
 import { ValidationError } from "@/libs/error/validation-error";
 import { BadRequestException, InternalServerErrorException } from "@/libs/hono/exceptions";
 import { createOpenAPIApp } from "@/libs/hono/factory";
 import { createRoute } from "@hono/zod-openapi";
 import { z } from "zod";
-import { RestTaskSchema, TaskContentSchema, TaskDescriptionSchema, toRestTask } from "../schema";
+import {
+  RestTaskSchema,
+  TaskContentSchema,
+  TaskDescriptionSchema,
+  TaskIdPathSchema,
+  toRestTask,
+} from "../schema";
 
-const NewTaskSchema = z
+const UpdateTaskSchema = z
   .object({
-    content: TaskContentSchema,
+    content: TaskContentSchema.optional(),
     description: TaskDescriptionSchema.optional(),
   })
-  .openapi("NewTask");
+  .openapi("UpdateTask");
 
 const route = createRoute({
   method: "post",
-  path: "/",
-  description: "Creates a new task and returns it as a JSON object.",
+  path: "/{id}",
+  description: "Update a task.",
   request: {
+    params: z.object({
+      id: TaskIdPathSchema,
+    }),
     body: {
-      content: { "application/json": { schema: NewTaskSchema } },
+      content: { "application/json": { schema: UpdateTaskSchema } },
     },
   },
   responses: {
@@ -40,12 +50,15 @@ const route = createRoute({
 
 export default createOpenAPIApp().openapi(route, async (c) => {
   const { container } = c.var;
-  const { createTask } = container;
+  const { updateTask } = container;
 
-  return createTask(c.req.valid("json")).match(
+  return updateTask({
+    id: c.req.param("id"),
+    ...c.req.valid("json"),
+  }).match(
     (task) => c.json(toRestTask(task), 200),
     (err) => {
-      if (err instanceof ValidationError) {
+      if (err instanceof ValidationError || err instanceof EntityNotFoundError) {
         throw new BadRequestException({ message: err.message });
       }
       throw new InternalServerErrorException({ cause: err });

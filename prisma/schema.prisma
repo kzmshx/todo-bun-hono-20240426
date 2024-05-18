@@ -16,7 +16,7 @@ datasource db {
 model Task {
   id          String   @id
   content     String
-  description String?
+  description String
   isCompleted Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt @ignore

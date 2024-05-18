@@ -1,6 +1,5 @@
 import { InternalServerErrorException, NotFoundException } from "@/libs/hono/exceptions";
 import { createOpenAPIApp } from "@/libs/hono/factory";
-import { getActiveTask } from "@/modules/task";
 import { createRoute, z } from "@hono/zod-openapi";
 import { RestTaskSchema, TaskIdPathSchema, toRestTask } from "../schema";
 
@@ -9,7 +8,9 @@ const route = createRoute({
   path: "/{id}",
   description: "Returns a single active (non-completed) task by ID as a JSON object.",
   request: {
-    params: z.object({ id: TaskIdPathSchema }),
+    params: z.object({
+      id: TaskIdPathSchema,
+    }),
   },
   responses: {
     200: {
@@ -30,10 +31,11 @@ const route = createRoute({
 
 export default createOpenAPIApp().openapi(route, async (c) => {
   const { container } = c.var;
-  const { prisma } = container;
+  const { getActiveTask } = container;
+
   const { id } = c.req.param();
 
-  return getActiveTask({ prisma })(id).match(
+  return getActiveTask(id).match(
     (task) => {
       if (!task) {
         throw new NotFoundException({ message: "Task not found" });

@@ -3,18 +3,20 @@ import type { PrismaClient } from "@prisma/client";
 import { ResultAsync } from "neverthrow";
 import type { TaskModel } from "./models";
 
-export type GetActiveTask = (id: string) => ResultAsync<TaskModel | null, Error>;
+export type GetActiveTasks = () => ResultAsync<TaskModel[], Error>;
 
-export const getActiveTask =
-  ({ prisma }: { prisma: PrismaClient }): GetActiveTask =>
-  (id) => {
+export const getActiveTasks =
+  ({ prisma }: { prisma: PrismaClient }): GetActiveTasks =>
+  () => {
     return ResultAsync.fromPromise(
-      prisma.task.findFirst({
+      prisma.task.findMany({
         where: {
-          id,
           isCompleted: false,
         },
+        orderBy: {
+          id: "asc",
+        },
       }),
-      (err) => PrismaClientError.create(err),
+      PrismaClientError.create,
     );
   };

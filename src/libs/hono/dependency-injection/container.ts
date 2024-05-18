@@ -1,7 +1,13 @@
 import type { Env } from "@/libs/env";
 import { prisma } from "@/libs/prisma/client";
-import { createTaskWorkflow } from "@/modules/task";
-import { saveCreatedTask } from "@/modules/task/entities/task-repository";
+import { createTask, createTaskWorkflow, getActiveTask, getActiveTasks } from "@/modules/task";
+import { updateTask } from "@/modules/task/api/update-task";
+import {
+  getActiveTaskById,
+  saveCreatedTask,
+  saveUpdatedTask,
+} from "@/modules/task/domain/task-repository";
+import { updateTaskWorkflow } from "@/modules/task/workflows/update-task";
 import type { PrismaClient } from "@prisma/client";
 
 type ServiceMap = {
@@ -18,11 +24,39 @@ export class Container implements ServiceMap {
     return (this._prisma ??= prisma);
   }
 
-  get saveCreatedTask() {
-    return saveCreatedTask({ prisma: this.prisma });
+  get createTask() {
+    return createTask(this);
   }
 
   get createTaskWorkflow() {
-    return createTaskWorkflow({ saveCreatedTask: this.saveCreatedTask });
+    return createTaskWorkflow(this);
+  }
+
+  get getActiveTask() {
+    return getActiveTask(this);
+  }
+
+  get getActiveTasks() {
+    return getActiveTasks(this);
+  }
+
+  get getActiveTaskById() {
+    return getActiveTaskById(this);
+  }
+
+  get saveCreatedTask() {
+    return saveCreatedTask(this);
+  }
+
+  get saveUpdatedTask() {
+    return saveUpdatedTask(this);
+  }
+
+  get updateTask() {
+    return updateTask(this);
+  }
+
+  get updateTaskWorkflow() {
+    return updateTaskWorkflow(this);
   }
 }

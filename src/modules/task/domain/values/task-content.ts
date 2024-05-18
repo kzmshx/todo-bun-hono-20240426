@@ -12,6 +12,6 @@ export const TaskContentSchema = TaskContentValueSchema.brand<"TaskContent">();
 
 export type TaskContent = z.infer<typeof TaskContentSchema>;
 
-export const TaskContent = (value: string): Result<TaskContent, ValidationError> => {
+export const newTaskContent = (value: string): Result<TaskContent, ValidationError> => {
   return validate(TaskContentSchema, value);
 };

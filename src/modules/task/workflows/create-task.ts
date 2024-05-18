@@ -1,15 +1,30 @@
 import { Result, type ResultAsync, ok } from "neverthrow";
-import type { CreatedTask, Task, UnvalidatedTask, ValidatedTask } from "../entities/task";
-import type { SaveCreatedTask } from "../entities/task-repository";
-import { TaskContent } from "../values/task-content";
-import { TaskDescription } from "../values/task-description";
-import { generateTaskId } from "../values/task-id";
+import type { ActiveTask, CreatedTask } from "../domain/task";
+import type { SaveCreatedTask } from "../domain/task-repository";
+import { type TaskContent, newTaskContent } from "../domain/values/task-content";
+import { type TaskDescription, newTaskDescription } from "../domain/values/task-description";
+import { generateTaskId } from "../domain/values/task-id";
 
-type ValidateTask = (input: UnvalidatedTask) => Result<ValidatedTask, Error>;
+type UnvalidatedInput = {
+  kind: "UnvalidatedInput";
+  content: string;
+  description?: string;
+};
 
-export const validateTask: ValidateTask = (input) => {
-  const content = TaskContent(input.content);
-  const description = input.description ? TaskDescription(input.description) : ok(null);
+type ValidatedInput = {
+  kind: "ValidatedTask";
+  content: TaskContent;
+  description: TaskDescription;
+};
+
+type ValidateInput = (input: UnvalidatedInput) => Result<ValidatedInput, Error>;
+type CreateTask = (input: ValidatedInput) => Result<CreatedTask, Error>;
+
+export type CreateTaskWorkflow = (input: UnvalidatedInput) => ResultAsync<ActiveTask, Error>;
+
+const validateInput = (): ValidateInput => (input) => {
+  const content = newTaskContent(input.content);
+  const description = newTaskDescription(input.description ?? "");
 
   return Result.combine([content, description]).map(([content, description]) => ({
     kind: "ValidatedTask",
@@ -18,9 +33,7 @@ export const validateTask: ValidateTask = (input) => {
   }));
 };
 
-type CreateTask = (input: ValidatedTask) => Result<CreatedTask, Error>;
-
-export const createTask: CreateTask = (input) => {
+const createTask = (): CreateTask => (input) => {
   return ok({
     ...input,
     kind: "CreatedTask",
@@ -30,14 +43,11 @@ export const createTask: CreateTask = (input) => {
   });
 };
 
-export type CreateTaskWorkflow = (input: UnvalidatedTask) => ResultAsync<Task, Error>;
-
-type Context = {
-  saveCreatedTask: SaveCreatedTask;
-};
-
 export const createTaskWorkflow =
-  ({ saveCreatedTask }: Context): CreateTaskWorkflow =>
+  (ctx: { saveCreatedTask: SaveCreatedTask }): CreateTaskWorkflow =>
   (input) => {
-    return ok(input).andThen(validateTask).andThen(createTask).asyncAndThen(saveCreatedTask);
+    return ok(input)
+      .andThen(validateInput())
+      .andThen(createTask())
+      .asyncAndThen(ctx.saveCreatedTask);
   };

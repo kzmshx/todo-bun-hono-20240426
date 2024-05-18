@@ -14,7 +14,7 @@ describe("POST /rest/v1/tasks", () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({
       content: body.content,
-      description: null,
+      description: "",
       is_completed: false,
     });
   });
