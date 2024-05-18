@@ -1,6 +1,7 @@
 import { InternalServerErrorException } from "@/libs/hono/exceptions";
 import { createOpenAPIApp } from "@/libs/hono/factory";
 import type { TaskModel } from "@/modules/task";
+import { ErrorResponseSchema } from "@/routes/rest/schema";
 import { createRoute, z } from "@hono/zod-openapi";
 import { RestTaskListSchema, TaskIdsQuerySchema, toRestTask } from "../schema";
 
@@ -19,7 +20,7 @@ const route = createRoute({
       description: "Single task.",
     },
     500: {
-      content: { "application/json": { schema: z.object({ message: z.string() }) } },
+      content: { "application/json": { schema: ErrorResponseSchema } },
       description: "Internal server error.",
     },
   },

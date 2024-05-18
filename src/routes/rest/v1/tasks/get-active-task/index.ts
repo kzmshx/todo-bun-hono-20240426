@@ -1,5 +1,6 @@
 import { InternalServerErrorException, NotFoundException } from "@/libs/hono/exceptions";
 import { createOpenAPIApp } from "@/libs/hono/factory";
+import { ErrorResponseSchema } from "@/routes/rest/schema";
 import { createRoute, z } from "@hono/zod-openapi";
 import { RestTaskSchema, TaskIdPathSchema, toRestTask } from "../schema";
 
@@ -18,11 +19,11 @@ const route = createRoute({
       description: "Single task.",
     },
     404: {
-      content: { "application/json": { schema: z.object({ message: z.string() }) } },
+      content: { "application/json": { schema: ErrorResponseSchema } },
       description: "Task not found.",
     },
     500: {
-      content: { "application/json": { schema: z.object({ message: z.string() }) } },
+      content: { "application/json": { schema: ErrorResponseSchema } },
       description: "Internal server error.",
     },
   },

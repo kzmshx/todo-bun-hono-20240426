@@ -2,6 +2,7 @@ import { EntityNotFoundError } from "@/libs/error/entity-not-found-error";
 import { ValidationError } from "@/libs/error/validation-error";
 import { BadRequestException, InternalServerErrorException } from "@/libs/hono/exceptions";
 import { createOpenAPIApp } from "@/libs/hono/factory";
+import { ErrorResponseSchema } from "@/routes/rest/schema";
 import { createRoute } from "@hono/zod-openapi";
 import { z } from "zod";
 import {
@@ -37,11 +38,11 @@ const route = createRoute({
       description: "Single task.",
     },
     400: {
-      content: { "application/json": { schema: z.object({ message: z.string() }) } },
+      content: { "application/json": { schema: ErrorResponseSchema } },
       description: "Bad request.",
     },
     500: {
-      content: { "application/json": { schema: z.object({ message: z.string() }) } },
+      content: { "application/json": { schema: ErrorResponseSchema } },
       description: "Internal server error.",
     },
   },
