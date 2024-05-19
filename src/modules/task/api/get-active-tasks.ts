@@ -1,9 +1,9 @@
-import { PrismaClientError } from "@/libs/error/prisma-client-error";
+import { PrismaClientError } from "@/libs/error";
 import type { PrismaClient } from "@prisma/client";
 import { ResultAsync } from "neverthrow";
 import type { TaskModel } from "./models";
 
-export type GetActiveTasks = () => ResultAsync<TaskModel[], Error>;
+export type GetActiveTasks = () => ResultAsync<TaskModel[], PrismaClientError>;
 
 export const getActiveTasks =
   ({ prisma }: { prisma: PrismaClient }): GetActiveTasks =>

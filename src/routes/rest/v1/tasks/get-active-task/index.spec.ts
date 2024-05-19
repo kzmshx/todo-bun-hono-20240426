@@ -3,7 +3,7 @@ import { app } from "@/index";
 import { TaskFactory } from "@/libs/prisma/factories";
 import { ulid } from "ulid";
 
-describe("GET /rest/v1/tasks/:id", () => {
+describe("GET /rest/v1/tasks/{id}", () => {
   test("200 OK", async () => {
     // Arrange
     const activeTask = await TaskFactory.create({ isCompleted: false });

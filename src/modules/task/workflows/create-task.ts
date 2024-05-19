@@ -1,3 +1,4 @@
+import type { PrismaClientError, ValidationError } from "@/libs/error";
 import { Result, type ResultAsync, ok } from "neverthrow";
 import type { ActiveTask, CreatedTask } from "../domain/task";
 import type { SaveCreatedTask } from "../domain/task-repository";
@@ -17,10 +18,12 @@ type ValidatedInput = {
   description: TaskDescription;
 };
 
-type ValidateInput = (input: UnvalidatedInput) => Result<ValidatedInput, Error>;
-type CreateTask = (input: ValidatedInput) => Result<CreatedTask, Error>;
+type ValidateInput = (input: UnvalidatedInput) => Result<ValidatedInput, ValidationError>;
+type CreateTask = (input: ValidatedInput) => Result<CreatedTask, never>;
 
-export type CreateTaskWorkflow = (input: UnvalidatedInput) => ResultAsync<ActiveTask, Error>;
+export type CreateTaskWorkflow = (
+  input: UnvalidatedInput,
+) => ResultAsync<ActiveTask, ValidationError | PrismaClientError>;
 
 const validateInput = (): ValidateInput => (input) => {
   const content = newTaskContent(input.content);

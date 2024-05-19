@@ -1,4 +1,4 @@
-import type { ValidationError } from "@/libs/error/validation-error";
+import type { ValidationError } from "@/libs/error";
 import { validate } from "@/libs/zod/validate";
 import type { Result } from "neverthrow";
 import { z } from "zod";

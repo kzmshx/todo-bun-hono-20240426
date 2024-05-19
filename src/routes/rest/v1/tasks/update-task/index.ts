@@ -68,10 +68,10 @@ export default createOpenAPIApp().openapi(route, async (c) => {
     (task) => c.json(toRestTask(task), 200),
     (err) => {
       if (err instanceof ValidationError) {
-        throw new BadRequestException({ message: err.message });
+        throw new BadRequestException(err);
       }
       if (err instanceof EntityNotFoundError) {
-        throw new NotFoundException({ message: err.message });
+        throw new NotFoundException(err);
       }
       throw new InternalServerErrorException({ cause: err });
     },

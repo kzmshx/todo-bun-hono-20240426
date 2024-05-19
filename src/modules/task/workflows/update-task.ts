@@ -1,3 +1,4 @@
+import type { EntityNotFoundError, PrismaClientError, ValidationError } from "@/libs/error";
 import { Result, type ResultAsync, ok } from "neverthrow";
 import {
   type ActiveTask,
@@ -30,11 +31,15 @@ type ValidatedCommand = {
   task: ActiveTask;
 };
 
-type ValidateInput = (input: UnvalidatedInput) => Result<ValidatedInput, Error>;
-type GetTask = (input: ValidatedInput) => ResultAsync<ValidatedCommand, Error>;
-type UpdateTask = (input: ValidatedCommand) => Result<UpdatedTask, Error>;
+type ValidateInput = (input: UnvalidatedInput) => Result<ValidatedInput, ValidationError>;
+type GetTask = (
+  input: ValidatedInput,
+) => ResultAsync<ValidatedCommand, ValidationError | EntityNotFoundError | PrismaClientError>;
+type UpdateTask = (input: ValidatedCommand) => Result<UpdatedTask, never>;
 
-export type UpdateTaskWorkflow = (input: UnvalidatedInput) => ResultAsync<ActiveTask, Error>;
+export type UpdateTaskWorkflow = (
+  input: UnvalidatedInput,
+) => ResultAsync<ActiveTask, ValidationError | EntityNotFoundError | PrismaClientError>;
 
 const validateInput = (): ValidateInput => (input) => {
   const id = newTaskId(input.id);

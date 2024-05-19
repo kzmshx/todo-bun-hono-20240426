@@ -1,9 +1,14 @@
-import { EntityNotFoundError } from "@/libs/error/entity-not-found-error";
-import { PrismaClientError } from "@/libs/error/prisma-client-error";
-import type { ValidationError } from "@/libs/error/validation-error";
+import { EntityNotFoundError, PrismaClientError, type ValidationError } from "@/libs/error";
 import type { PrismaClient } from "@prisma/client";
 import { ResultAsync, err, ok } from "neverthrow";
-import { type ActiveTask, type CreatedTask, type UpdatedTask, newActiveTask } from "./task";
+import {
+  type ActiveTask,
+  type ClosedTask,
+  type CreatedTask,
+  type UpdatedTask,
+  newActiveTask,
+  newClosedTask,
+} from "./task";
 import type { TaskId } from "./values/task-id";
 
 export type SaveCreatedTask = (
@@ -13,6 +18,10 @@ export type SaveCreatedTask = (
 export type SaveUpdatedTask = (
   model: UpdatedTask,
 ) => ResultAsync<ActiveTask, ValidationError | PrismaClientError>;
+
+export type SaveClosedTask = (
+  model: ClosedTask,
+) => ResultAsync<ClosedTask, ValidationError | PrismaClientError>;
 
 export type FindActiveTaskById = (
   id: TaskId,
@@ -47,6 +56,18 @@ export const saveUpdatedTask =
       }),
       PrismaClientError.create,
     ).andThen(newActiveTask);
+  };
+
+export const saveClosedTask =
+  ({ prisma }: Context): SaveClosedTask =>
+  ({ kind: _, ...model }) => {
+    return ResultAsync.fromPromise(
+      prisma.task.update({
+        where: { id: model.id },
+        data: { isCompleted: true },
+      }),
+      PrismaClientError.create,
+    ).andThen(newClosedTask);
   };
 
 export const findActiveTaskById =

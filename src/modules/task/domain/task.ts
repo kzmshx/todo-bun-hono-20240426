@@ -1,4 +1,4 @@
-import { ValidationError } from "@/libs/error/validation-error";
+import { ValidationError } from "@/libs/error";
 import type { Omit } from "@prisma/client/runtime/library";
 import { Result, err, ok } from "neverthrow";
 import { type TaskContent, newTaskContent } from "./values/task-content";
@@ -26,6 +26,7 @@ export type ActiveTask = {
   id: TaskId;
   content: TaskContent;
   description: TaskDescription;
+  isCompleted: false;
   createdAt: Date;
 };
 
@@ -46,11 +47,12 @@ export const newActiveTask = (record: TaskRecord): Result<ActiveTask, Validation
     : ok(false);
 
   return Result.combine([id, content, description, isCompleted]).map(
-    ([id, content, description]) => ({
+    ([id, content, description, isCompleted]) => ({
       kind: "ActiveTask",
       id,
       content,
       description,
+      isCompleted,
       createdAt: record.createdAt,
     }),
   );
@@ -69,6 +71,7 @@ export const updateDescription = (task: ActiveTask, description: TaskDescription
 export const closeTask = (task: ActiveTask): ClosedTask => ({
   ...task,
   kind: "ClosedTask",
+  isCompleted: true,
 });
 
 export type ClosedTask = {
@@ -76,6 +79,7 @@ export type ClosedTask = {
   id: TaskId;
   content: TaskContent;
   description: TaskDescription;
+  isCompleted: true;
   createdAt: Date;
 };
 
@@ -88,11 +92,12 @@ export const newClosedTask = (record: TaskRecord): Result<ClosedTask, Validation
     : err(new ValidationError("Task is not completed"));
 
   return Result.combine([id, content, description, isCompleted]).map(
-    ([id, content, description]) => ({
+    ([id, content, description, isCompleted]) => ({
       kind: "ClosedTask",
       id,
       content,
       description,
+      isCompleted,
       createdAt: record.createdAt,
     }),
   );
@@ -101,4 +106,5 @@ export const newClosedTask = (record: TaskRecord): Result<ClosedTask, Validation
 export const reopenTask = (closedTask: ClosedTask): ActiveTask => ({
   ...closedTask,
   kind: "ActiveTask",
+  isCompleted: false,
 });

@@ -47,7 +47,7 @@ export default createOpenAPIApp().openapi(route, async (c) => {
     (task) => c.json(toRestTask(task), 200),
     (err) => {
       if (err instanceof ValidationError) {
-        throw new BadRequestException({ message: err.message });
+        throw new BadRequestException(err);
       }
       throw new InternalServerErrorException({ cause: err });
     },

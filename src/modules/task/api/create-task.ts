@@ -1,21 +1,20 @@
+import type { PrismaClientError, ValidationError } from "@/libs/error";
 import type { ResultAsync } from "neverthrow";
 import type { TaskModel } from ".";
 import type { CreateTaskWorkflow } from "../workflows/create-task";
-import { activeTaskToModel } from "./models";
+import { toModel } from "./models";
 
 export type CreateTaskInput = {
   content: string;
   description?: string;
 };
 
-export type CreateTask = (input: CreateTaskInput) => ResultAsync<TaskModel, Error>;
-
-type Context = {
-  createTaskWorkflow: CreateTaskWorkflow;
-};
+export type CreateTask = (
+  input: CreateTaskInput,
+) => ResultAsync<TaskModel, ValidationError | PrismaClientError>;
 
 export const createTask =
-  ({ createTaskWorkflow }: Context): CreateTask =>
-  (input) => {
-    return createTaskWorkflow({ kind: "UnvalidatedInput", ...input }).map(activeTaskToModel);
+  ({ createTaskWorkflow }: { createTaskWorkflow: CreateTaskWorkflow }): CreateTask =>
+  (input: CreateTaskInput) => {
+    return createTaskWorkflow({ kind: "UnvalidatedInput", ...input }).map(toModel);
   };
