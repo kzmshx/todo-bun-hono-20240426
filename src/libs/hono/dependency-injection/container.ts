@@ -2,14 +2,18 @@ import type { Env } from "@/libs/env";
 import { prisma } from "@/libs/prisma/client";
 import { createTask, createTaskWorkflow, getActiveTask, getActiveTasks } from "@/modules/task";
 import { closeTask } from "@/modules/task/api/close-task";
+import { reopenTask } from "@/modules/task/api/reopen-task";
 import { updateTask } from "@/modules/task/api/update-task";
 import {
   getActiveTaskById,
+  getClosedTaskById,
+  saveActiveTask,
   saveClosedTask,
   saveCreatedTask,
   saveUpdatedTask,
 } from "@/modules/task/domain/task-repository";
 import { closeTaskWorkflow } from "@/modules/task/workflows/close-task";
+import { reopenTaskWorkflow } from "@/modules/task/workflows/reopen-task";
 import { updateTaskWorkflow } from "@/modules/task/workflows/update-task";
 import type { PrismaClient } from "@prisma/client";
 
@@ -53,6 +57,22 @@ export class Container implements ServiceMap {
 
   get getActiveTaskById() {
     return getActiveTaskById(this);
+  }
+
+  get getClosedTaskById() {
+    return getClosedTaskById(this);
+  }
+
+  get reopenTask() {
+    return reopenTask(this);
+  }
+
+  get reopenTaskWorkflow() {
+    return reopenTaskWorkflow(this);
+  }
+
+  get saveActiveTask() {
+    return saveActiveTask(this);
   }
 
   get saveClosedTask() {
