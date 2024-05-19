@@ -5,11 +5,17 @@ import {
   type ActiveTask,
   type ClosedTask,
   type CreatedTask,
+  type DeletedTask,
   type UpdatedTask,
   newActiveTask,
   newClosedTask,
+  newDeletedTask,
 } from "./task";
 import type { TaskId } from "./values/task-id";
+
+export type DeleteTaskById = (
+  id: TaskId,
+) => ResultAsync<DeletedTask, ValidationError | PrismaClientError>;
 
 export type FindActiveTaskById = (
   id: TaskId,
@@ -46,6 +52,25 @@ export type SaveUpdatedTask = (
 type Context = {
   prisma: PrismaClient;
 };
+
+const updateTask = (
+  prisma: PrismaClient,
+  model: Task,
+): ResultAsync<Task, ValidationError | PrismaClientError> => {
+  return ResultAsync.fromPromise(
+    prisma.task.update({ where: { id: model.id }, data: { ...model } }),
+    PrismaClientError.create,
+  );
+};
+
+export const deleteTaskById =
+  ({ prisma }: Context): DeleteTaskById =>
+  (id) => {
+    return ResultAsync.fromPromise(
+      prisma.task.delete({ where: { id } }),
+      PrismaClientError.create,
+    ).andThen(newDeletedTask);
+  };
 
 export const findActiveTaskById =
   ({ prisma }: Context): FindActiveTaskById =>
@@ -93,16 +118,6 @@ export const saveCreatedTask =
       PrismaClientError.create,
     ).andThen(newActiveTask);
   };
-
-const updateTask = (
-  prisma: PrismaClient,
-  model: Task,
-): ResultAsync<Task, ValidationError | PrismaClientError> => {
-  return ResultAsync.fromPromise(
-    prisma.task.update({ where: { id: model.id }, data: { ...model } }),
-    PrismaClientError.create,
-  );
-};
 
 export const saveActiveTask =
   ({ prisma }: Context): SaveActiveTask =>

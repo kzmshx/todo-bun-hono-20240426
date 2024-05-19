@@ -13,7 +13,7 @@ type TaskRecord = {
   createdAt: Date;
 };
 
-export type Task = {
+export type BaseTask = {
   id: TaskId;
   content: TaskContent;
   description: TaskDescription;
@@ -21,21 +21,9 @@ export type Task = {
   createdAt: Date;
 };
 
-export type ActiveTask = {
+export type ActiveTask = Omit<BaseTask, "isCompleted"> & {
   kind: "ActiveTask";
-  id: TaskId;
-  content: TaskContent;
-  description: TaskDescription;
   isCompleted: false;
-  createdAt: Date;
-};
-
-export type CreatedTask = Omit<ActiveTask, "kind"> & {
-  kind: "CreatedTask";
-};
-
-export type UpdatedTask = Omit<ActiveTask, "kind"> & {
-  kind: "UpdatedTask";
 };
 
 export const newActiveTask = (record: TaskRecord): Result<ActiveTask, ValidationError> => {
@@ -74,13 +62,9 @@ export const closeTask = (task: ActiveTask): ClosedTask => ({
   isCompleted: true,
 });
 
-export type ClosedTask = {
+export type ClosedTask = Omit<BaseTask, "isCompleted"> & {
   kind: "ClosedTask";
-  id: TaskId;
-  content: TaskContent;
-  description: TaskDescription;
   isCompleted: true;
-  createdAt: Date;
 };
 
 export const newClosedTask = (record: TaskRecord): Result<ClosedTask, ValidationError> => {
@@ -108,3 +92,32 @@ export const reopenTask = (closedTask: ClosedTask): ActiveTask => ({
   kind: "ActiveTask",
   isCompleted: false,
 });
+
+export type DeletedTask = BaseTask & {
+  kind: "DeletedTask";
+};
+
+export const newDeletedTask = (record: TaskRecord): Result<DeletedTask, ValidationError> => {
+  const id = newTaskId(record.id);
+  const content = newTaskContent(record.content);
+  const description = newTaskDescription(record.description);
+
+  return Result.combine([id, content, description]).map(([id, content, description]) => ({
+    kind: "DeletedTask",
+    id,
+    content,
+    description,
+    isCompleted: record.isCompleted,
+    createdAt: record.createdAt,
+  }));
+};
+
+export type CreatedTask = Omit<BaseTask, "isCompleted"> & {
+  kind: "CreatedTask";
+  isCompleted: false;
+};
+
+export type UpdatedTask = Omit<BaseTask, "isCompleted"> & {
+  kind: "UpdatedTask";
+  isCompleted: false;
+};
