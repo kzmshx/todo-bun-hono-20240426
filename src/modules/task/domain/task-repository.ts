@@ -53,45 +53,40 @@ type Context = {
   prisma: PrismaClient;
 };
 
+const toResultAsync = <T>(promise: Promise<T>): ResultAsync<T, PrismaClientError> =>
+  ResultAsync.fromPromise(promise, PrismaClientError.create);
+
 const updateTask = (
   prisma: PrismaClient,
   model: Task,
 ): ResultAsync<Task, ValidationError | PrismaClientError> => {
-  return ResultAsync.fromPromise(
-    prisma.task.update({ where: { id: model.id }, data: { ...model } }),
-    PrismaClientError.create,
-  );
+  const promise = prisma.task.update({ where: { id: model.id }, data: { ...model } });
+
+  return toResultAsync(promise);
 };
 
 export const deleteTaskById =
   ({ prisma }: Context): DeleteTaskById =>
   (id) => {
-    return ResultAsync.fromPromise(
-      prisma.task.delete({ where: { id } }),
-      PrismaClientError.create,
-    ).andThen(newDeletedTask);
+    const promise = prisma.task.delete({ where: { id } });
+
+    return toResultAsync(promise).andThen(newDeletedTask);
   };
 
 export const findActiveTaskById =
   ({ prisma }: Context): FindActiveTaskById =>
   (id) => {
-    return ResultAsync.fromPromise(
-      prisma.task.findUnique({ where: { id, isCompleted: false } }),
-      PrismaClientError.create,
-    ).andThen((record) => {
-      return record ? newActiveTask(record) : ok(null);
-    });
+    const promise = prisma.task.findUnique({ where: { id, isCompleted: false } });
+
+    return toResultAsync(promise).andThen((v) => (v ? newActiveTask(v) : ok(null)));
   };
 
 export const findClosedTaskById =
   ({ prisma }: Context): FindClosedTaskById =>
   (id) => {
-    return ResultAsync.fromPromise(
-      prisma.task.findUnique({ where: { id, isCompleted: true } }),
-      PrismaClientError.create,
-    ).andThen((record) => {
-      return record ? newClosedTask(record) : ok(null);
-    });
+    const promise = prisma.task.findUnique({ where: { id, isCompleted: true } });
+
+    return toResultAsync(promise).andThen((v) => (v ? newClosedTask(v) : ok(null)));
   };
 
 export const getActiveTaskById =
@@ -113,10 +108,9 @@ export const getClosedTaskById =
 export const saveCreatedTask =
   ({ prisma }: Context): SaveCreatedTask =>
   ({ kind: _, ...model }) => {
-    return ResultAsync.fromPromise(
-      prisma.task.create({ data: { ...model, isCompleted: false } }),
-      PrismaClientError.create,
-    ).andThen(newActiveTask);
+    const promise = prisma.task.create({ data: { ...model, isCompleted: false } });
+
+    return toResultAsync(promise).andThen(newActiveTask);
   };
 
 export const saveActiveTask =
